@@ -1,0 +1,210 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
+	<title></title>
+	
+	<style>
+		#menu {
+			background:#eee;
+			border-bottom:1px solid #ccc;
+		}
+	
+		#wrapper {
+			padding-top:30px;
+		
+		}
+	
+		.entity {
+			position:relative;
+			margin-bottom:15px;
+			
+			padding-left:30px;
+			
+			box-sizing:border-box;
+		}
+		
+		.entity svg {
+			position:absolute;
+			left:0px;
+			top:50%;
+			transform:translateY(-50%);
+		}
+		
+		.entity label {
+			margin:0;
+		}
+		
+		.entity input[type=checkbox] {
+			position:absolute;
+			right:0px;
+			top:50%;
+			transform:translateY(-50%);
+		}
+		
+		.group {
+			background:#eee;
+			
+			padding:15px;
+			margin-bottom:30px;
+		}
+		
+		.group .head {
+			font-weight:bold;
+			margin-bottom:15px;
+			
+			font-size:16px;
+			line-height:100%;
+		}
+		
+		#message {
+			position:fixed;
+			right:15px;
+			bottom:0px;
+			z-index:999;
+			max-width:255px;
+		}
+		
+		#message > div {
+			box-shadow: 5px 10px 10px #888888;
+		}
+	</style>
+</head>
+<body>
+	<div id="message"></div>
+	<div class="container-fluid">
+		<div class="row" id="menu">
+			<div class="col-12">
+				<ul class="nav nav-tabs" id="navbar"></ul>
+			</div>
+		</div>
+		
+		<div class="row">
+			<div class="col-12" id="wrapper">
+				<div class="group">
+					<div class="head">Climate</div>
+					
+					<div class="entity">
+						<i class="far fa-lightbulb"></i>
+						<a href="#" data-toggle="modal" data-target="#exampleModal">Lamp naast bank</a>
+						
+						<input type="checkbox">
+					</div>
+					<div class="entity">
+						<i class="far fa-lightbulb"></i>
+						<a href="#" data-toggle="modal" data-target="#exampleModal">Lamp naast bank</a>
+						
+						<input type="checkbox">
+					</div>
+					<div class="entity">
+						<i class="far fa-lightbulb"></i>
+						<a href="#" data-toggle="modal" data-target="#exampleModal">Lamp naast bank</a>
+						
+						<input type="checkbox">
+					</div>
+					<div class="entity">
+						<i class="far fa-lightbulb"></i>
+						<a href="#" data-toggle="modal" data-target="#exampleModal">Lamp naast bank</a>
+						
+						<input type="checkbox">
+					</div>
+				</div>
+				<div class="group">
+					<div class="head">Others</div>
+					
+					<div class="entity">
+						<i class="far fa-lightbulb"></i>
+						<a href="#" data-toggle="modal" data-target="#exampleModal">Lamp naast bank</a>
+						
+						<input type="checkbox">
+					</div>
+					<div class="entity">
+						<i class="far fa-lightbulb"></i>
+						<a href="#" data-toggle="modal" data-target="#exampleModal">Lamp naast bank</a>
+						
+						<input type="checkbox">
+					</div>
+					<div class="entity">
+						<i class="far fa-lightbulb"></i>
+						<a href="#" data-toggle="modal" data-target="#exampleModal">Lamp naast bank</a>
+						
+						<input type="checkbox">
+					</div>
+					<div class="entity">
+						<i class="far fa-lightbulb"></i>
+						<a href="#" data-toggle="modal" data-target="#exampleModal">Lamp naast bank</a>
+						
+						<input type="checkbox">
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	
+	<div id="modals">
+		
+		<div class="modal" tabindex="-1" role="dialog" id="exampleModal">
+			<div class="modal-dialog" role="document">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title">Lamp naast bank</h5>
+						<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+					</div>
+					<div class="modal-body">
+						<div id="chart_div"></div>
+						<hr>
+						
+						<div class="form-group">
+							<label for="formGroupExampleInput">Field label</label>
+							<input type="text" class="form-control" id="formGroupExampleInput" placeholder="Example input">
+						</div>
+						<div class="form-group">
+							<label for="formGroupExampleInput">Field icon</label>
+							<select class="form-control">
+								<option>Fa-abc</option>
+							</select>
+						</div>
+						<div class="form-group">
+							<label for="formGroupExampleInput">Group</label>
+							<select class="form-control">
+								<option>Woonkamer</option>
+								<option>Slaapkamer</option>
+								<option>Slaapkamer_climate</option>
+								<option>Slaapkamer Dax</option>
+								<option>Slaapkamer Luuk</option>
+								<option>Kantoor</option>
+								<option>Anders</option>
+							</select>
+						</div>
+						
+						<hr>
+						<div class="form-group">
+							<label for="formGroupExampleInput">Poll ratio(ms)</label>
+							<input type="number" class="form-control" id="formGroupExampleInput" value="5000">
+						</div>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-primary">Save changes</button>
+						<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<script src="/socket.io/socket.io.js"></script>
+	<script defer src="https://use.fontawesome.com/releases/v5.0.8/js/all.js"></script>
+	<script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+	<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+	<script src="js/init.js" crossorigin="anonymous"></script>
+	
+	
+</body>
+</html>
