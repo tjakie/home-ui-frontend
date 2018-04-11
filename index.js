@@ -86,7 +86,7 @@ var initJsFile = require("./source/initJsFile.js");
   **/
 var sqlite3 = require('sqlite3').verbose();
 
-var db = new sqlite3.Database('./home-ui.db');
+var db = new sqlite3.Database('../home-ui.db');
 
 
 
