@@ -26,7 +26,7 @@ module.exports = function (file, options) {
 			console.log("exec #" + myId + ": node", file, JSON.stringify(JSON.stringify(defaultOptions.config)));
 		}
 			
-		ps = spawn("node", [file, JSON.stringify(defaultOptions.config)]);
+		ps = spawn("node", [file, JSON.stringify(defaultOptions.config)], { env: file.split("/").slice(0, -1).join("") } );
 		
 		ps.stdout.on('data', (data) => {
 			if (defaultOptions.verbose) {
