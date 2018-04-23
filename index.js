@@ -339,7 +339,7 @@ var net = require("net");
 var clients = [];
 function netBroadcast(message) {
 	for (var i = 0; i < clients.length; i++) {
-		clients[i].write(message);
+		clients[i].write(message + "\r\n");
 	}
 }
   

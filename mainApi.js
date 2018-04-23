@@ -71,25 +71,38 @@ module.exports.onDeviceChange = function (id, cb) {
 			
 		});
 		
+		var dataBuffer = "";
 		tcpSocket.on('data', function(data) {
-			var json = false;
-			try {
-				json = JSON.parse(data);
-			}
-			catch (e) {
-				
-			}
+			dataBuffer += data.toString("UTF-8");
 			
-			if (json.deviceValues) {
-				for (var i = 0; i < deviceChangeEvents.length; i ++) {
-					for (var id in json.deviceValues) {
-						if (deviceChangeEvents[i].id == id) {
-							deviceChangeEvents[i].cb(json.deviceValues[id]);
-							break;
+			var lines = dataBuffer.split("\r\n");
+			
+			for (var i = 0; i < lines.length; i ++) {
+				var json = false;
+				try {
+					json = JSON.parse(lines[0]);
+				}
+				catch (e) {
+					console.log("Unexpected result:", body, querystring.stringify(data));
+					
+					break;
+				}
+				
+				if (json.deviceValues) {
+					for (var i2 = 0; i2 < deviceChangeEvents.length; i2 ++) {
+						for (var id in json.deviceValues) {
+							if (deviceChangeEvents[i2].id == id) {
+								deviceChangeEvents[i2].cb(json.deviceValues[id]);
+								break;
+							}
 						}
 					}
 				}
 			}
+			
+			dataBuffer = lines.slice(i).join("\r\n");
+			
+			
 		});
 	}
 	
