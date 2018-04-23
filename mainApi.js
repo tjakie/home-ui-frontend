@@ -29,7 +29,18 @@ module.exports.requestApi = function (uri, method, data, cb) {
 		
 		res.on('end', () => {
 			if (cb) {
-				cb(null, JSON.parse(body));
+				var data = null;
+				
+				try {
+					data = JSON.parse(body);
+				}
+				catch (e) {
+					console.log("Unexpected result:", body, querystring.stringify(data));
+					
+					return;
+				}
+				
+				cb(null, data);
 			}
 		});
 	});

@@ -179,6 +179,50 @@ function startHardwareInterface (hardwareId) {
 }
 
 var deviceValues = {};
+function updateDeviceValue (deviceId, data) {
+	deviceValues[deviceId] = data;
+	
+	if (data.type === "select") {
+		//TODO THIS ALSO NEEDS TO WORK WITH INT VALUES!
+		
+		db.all("SELECT * FROM (SELECT DISTINCT jsonValue as val FROM deviceValues WHERE deviceId = ? ORDER BY rowid DESC) LIMIT 100", [
+			deviceId 
+		], function (err, result) {
+			if (err) {
+				console.log(err);
+			}
+			
+			deviceValues[deviceId].options = {};
+			
+			for (var i = 0; i < result.length; i ++) {
+				var jsonData = null;
+				
+				if (result[i].val) {
+					try {
+						jsonData = JSON.parse(result[i].val);
+					}
+					catch (e) {
+						console.log(e);
+					}
+				}
+				
+				
+				if (jsonData && jsonData.key && jsonData.label) {
+					deviceValues[deviceId].options[jsonData.key] = jsonData.label;
+				}
+			}
+			
+			dataUpdate({
+				"deviceValues": deviceValues
+			});
+		});
+	}
+	
+	dataUpdate({
+		"deviceValues": deviceValues
+	});
+}
+
 
 db.serialize(function () {
 	validateTables({
@@ -222,26 +266,41 @@ db.serialize(function () {
 			"deviceId": "INT(11)",
 			"timestamp": "INT(11)",
 			"value": "INT(3)",
+			"jsonValue": "TEXT"
 			
 		}
 	}, function () {
-		var initQuery = ["SELECT device.rowid, `name`, `group`, `type`, deviceValues.value FROM device"];
+		var initQuery = ["SELECT device.rowid, `name`, `group`, `type`, deviceValues.value, deviceValues.jsonValue FROM device"];
 		initQuery.push("INNER JOIN deviceValues ON deviceValues.deviceId = device.rowid");
 		initQuery.push("INNER JOIN (select max(rowid) as maxrowid from deviceValues group by deviceId) lastItem ON lastItem.maxrowid = deviceValues.rowid");
 		
 		db.all(initQuery.join(" "), function (err, devices) {
+			if (err) {
+				throw err;
+			}
+			
 			for (var i = 0; i < devices.length; i ++) {
-				deviceValues[devices[i].rowid] = {
+				var value = "";
+				if (devices[i].value !== -1) {
+					value = parseInt(devices[i].value);
+				}
+				else if(devices[i].jsonValue !== "") {
+					try {
+						value = JSON.parse(devices[i].jsonValue);
+					}
+					catch (e) {
+						console.log("Unexpected JSON for row: ", devices[i].rowid, "->" + devices[i].jsonValue + "<-", e);
+					}
+				}
+				
+				updateDeviceValue(devices[i].rowid, {
 					"name": devices[i].name,
 					"type": devices[i].type,
 					"group": devices[i].group,
-					"value": devices[i].value
-				};
+					"value": value
+				});
 			}
-							
-			dataUpdate({
-				"deviceValues": deviceValues
-			});
+				
 		});
 	});
 });
@@ -381,24 +440,20 @@ app.post("/api/device/", function (req, res) {
 		data.type
 	], function (err, result) {
 		if (result.length > 0) {
-			db.run("INSERT INTO deviceValues(deviceId, value, timestamp) VALUES(?,?,?)", [
+			db.run("INSERT INTO deviceValues(deviceId, value, jsonValue, timestamp) VALUES(?,?,?,?)", [
 				result[0].rowid,
 				0,
+				"NULL",
 				parseInt(new Date().getTime() / 1000)
 			]);
-			
 					
-			deviceValues[result[0].rowid] =  {
+			updateDeviceValue(result[0].rowid, {
 				"name": data.name,
 				"type": data.type,
 				"group": '',
 				"value": 0
-			};
-								
-			dataUpdate({
-				"deviceValues": deviceValues
 			});
-		
+			
 			res.end(result[0].rowid + "");
 		}
 		else {
@@ -423,26 +478,43 @@ app.post("/api/deviceValue/", function (req, res) {
 	//TODO verify the data
 	
 	if (data.id && deviceValues[data.id] !== undefined) {
+		var percentageValue = -1;
+		var jsonValue = "NULL";
+		
 		if (data.value) {
-			data.value = parseInt(data.value);
-		}
-		else {
-			data.value = NaN;
+			var newValue  = parseInt(data.value);
+			
+			if (!isNaN(newValue) && newValue >= 0 && newValue <= 100) {
+				percentageValue = newValue;
+				data.value = newValue;
+			}
+			else {
+				try {
+					var parsedDataValue = JSON.parse(data.value);
+					
+					jsonValue = data.value;
+					
+					data.value = parsedDataValue;
+				}
+				catch (e) {
+					
+				}
+			}
 		}
 		
-		if (!isNaN(data.value)) {			
-			if (deviceValues[data.id] !== data.value) {
-				db.run("INSERT INTO deviceValues(deviceId, value, timestamp) VALUES(?,?,?)", [
+		
+		if (percentageValue !== -1 || jsonValue !== "NULL") {
+			//TODO optimize this!
+			if (JSON.stringify(deviceValues[data.id].value) !== JSON.stringify(data.value)) {
+				db.run("INSERT INTO deviceValues(deviceId, value, jsonValue, timestamp) VALUES(?,?,?,?)", [
 					data.id,
-					data.value,
+					percentageValue,
+					jsonValue,
 					parseInt(new Date().getTime() / 1000)
 				]);
 
 				deviceValues[data.id].value = data.value;
-			
-				dataUpdate({
-					"deviceValues": deviceValues
-				});
+				updateDeviceValue(data.id, deviceValues[data.id]);
 			}
 		
 			res.end("true");

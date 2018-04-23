@@ -37,7 +37,7 @@ var models = {
 	"hardwareConfigForms": new dataModel([], "hardwareConfigForms"),
 	"activeHardware": new dataModel([], "activeHardware"),
 	"deviceGroups": new dataModel(),
-	"deviceValues": new dataModel()
+	"deviceValues": new dataModel([], "deviceValues")
 };
 
 
@@ -370,6 +370,39 @@ var view_fields = {
 	"dimmer": {
 		"html": function () {
 			return "TODO";
+		}
+	},
+	"select": {
+		"html": function (id, data) {
+			var switchHtml = [viewRenderIconAndLabel(data)];
+			
+			switchHtml.push("<select>");
+			for (var key in data.options) {
+				var label = data.options[key];
+				
+				switchHtml.push("<option value='" + key + "'" + (data.value && key === data.value.key? " selected" : "")  + ">" + label + "</option>");
+			}
+			
+			switchHtml.push("</select>");
+			
+			return switchHtml.join("");
+		},
+		"rendered": function (domEl, id, data) {
+			
+			$(domEl).find("select").change(function () {
+				this.disabled = true;
+				
+				$.ajax(baseUrl + "api/deviceValue/", {
+					"method": "POST",
+					"data": {
+						id: id,
+						value: JSON.stringify({
+							"key": this.value,
+							"label": data.options[this.value]
+						})
+					}
+				});
+			});
 		}
 	}
 };
