@@ -380,7 +380,7 @@ var view_fields = {
 			for (var key in data.options) {
 				var label = data.options[key];
 				
-				switchHtml.push("<option value='" + key + "'" + (data.value && key === data.value.key? " selected" : "")  + ">" + label + "</option>");
+				switchHtml.push("<option value='" + key + "'" + (data.value && key == data.value.key? " selected" : "")  + ">" + label + "</option>");
 			}
 			
 			switchHtml.push("</select>");
@@ -529,6 +529,15 @@ function startApp() {
 				models[i].setData(data[i]);
 			}
 		}
+		
+		if (data['deviceValue']) {
+			var d = models['deviceValues'].getData();
+			
+			d[data.deviceValue.id] = data.deviceValue.data;
+			
+			models['deviceValues'].setData(d);
+		}
+		
 	});
 
 	socket.on("message", function (data) {

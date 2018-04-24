@@ -1,10 +1,8 @@
 const { spawn } = require('child_process');
 
-var spawnCount = 0;
+var allSpawnApis = [];
 module.exports = function (file, options) {
-	spawnCount ++;
-	
-	var myId = spawnCount + 0;
+	var myId = allSpawnApis.length;
 	var defaultOptions = {
 		"config": {},
 		"onOutputEvent": function () { },
@@ -19,6 +17,7 @@ module.exports = function (file, options) {
 	
 	var result = {};
 	
+	allSpawnApis.push(result);
 	
 	var ps = true;
 	var initProcess = function () {
@@ -84,3 +83,15 @@ module.exports = function (file, options) {
 
 	return result;
 };
+
+function killWorkers () {
+	for (var i = 0; i < allSpawnApis.length; i ++) {
+		allSpawnApis[i].kill();
+	}
+	
+	process.exit(0);
+}
+
+process.on("uncaughtException", killWorkers);
+process.on("SIGINT", killWorkers);
+process.on("SIGTERM", killWorkers);

@@ -202,7 +202,7 @@ function updateDeviceValue (deviceId, data) {
 						jsonData = JSON.parse(result[i].val);
 					}
 					catch (e) {
-						console.log(e);
+						jsonData = null;
 					}
 				}
 				
@@ -213,13 +213,19 @@ function updateDeviceValue (deviceId, data) {
 			}
 			
 			dataUpdate({
-				"deviceValues": deviceValues
+				"deviceValue": {
+					"id": deviceId,
+					"data": deviceValues[deviceId]
+				}
 			});
 		});
 	}
 	
 	dataUpdate({
-		"deviceValues": deviceValues
+		"deviceValue": {
+			"id": deviceId,
+			"data": deviceValues[deviceId]
+		}
 	});
 }
 
@@ -326,6 +332,8 @@ io.on('connection', function (socket) {
 });
 
 function dataUpdate (data) {
+	data.updateTimeStamp = new Date().getTime();
+	
 	io.emit("dataUpdate", data);
 	
 	netBroadcast(JSON.stringify(data));

@@ -88,21 +88,17 @@ module.exports.onDeviceChange = function (id, cb) {
 					break;
 				}
 				
-				if (json.deviceValues) {
+				if (json.deviceValue) {
 					for (var i2 = 0; i2 < deviceChangeEvents.length; i2 ++) {
-						for (var id in json.deviceValues) {
-							if (deviceChangeEvents[i2].id == id) {
-								deviceChangeEvents[i2].cb(json.deviceValues[id]);
-								break;
-							}
+						if (deviceChangeEvents[i2].id == json.deviceValue.id) {
+							deviceChangeEvents[i2].cb(json.deviceValue.data, json.updateTimeStamp);
 						}
 					}
 				}
 			}
+			lines = lines.slice(i);
 			
-			dataBuffer = lines.slice(i).join("\r\n");
-			
-			
+			dataBuffer = lines.join("\r\n");
 		});
 	}
 	
