@@ -368,8 +368,26 @@ var view_fields = {
 		}
 	},
 	"dimmer": {
-		"html": function () {
-			return "TODO";
+		"html": function (id, data) {
+			var switchHtml = [viewRenderIconAndLabel(data)];
+			
+			switchHtml.push('<input type="range" min=0 max=100 value="' + data.value + '">');
+			
+			return switchHtml.join("");
+		},
+		"rendered": function (domEl, id, data) {
+			
+			$(domEl).find("input").change(function () {
+				this.disabled = true;
+				
+				$.ajax(baseUrl + "api/deviceValue/", {
+					"method": "POST",
+					"data": {
+						id: id,
+						value: parseInt(this.value)
+					}
+				});
+			});
 		}
 	},
 	"select": {
@@ -403,6 +421,17 @@ var view_fields = {
 					}
 				});
 			});
+		}
+	},
+	"text": {
+		"html": function (id, data) {
+			var html = [viewRenderIconAndLabel(data)];
+			
+			html.push("<pre>");
+			html.push(data.value);
+			html.push("</pre>");
+			
+			return html.join("");
 		}
 	}
 };

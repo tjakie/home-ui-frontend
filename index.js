@@ -490,11 +490,18 @@ app.post("/api/deviceValue/", function (req, res) {
 		var jsonValue = "NULL";
 		
 		if (data.value) {
-			var newValue  = parseInt(data.value);
+			var isNumberValue = false;
+			if (typeof(newValue) === "number") {
+				var newValue  = parseInt(data.value);
+				if (!isNaN(newValue) && newValue >= 0 && newValue <= 100) {
+					isNumberValue = newValue;
+				}
+			}
 			
-			if (!isNaN(newValue) && newValue >= 0 && newValue <= 100) {
-				percentageValue = newValue;
-				data.value = newValue;
+			
+			if (isNumberValue !== false) {
+				percentageValue = isNumberValue;
+				data.value = isNumberValue;
 			}
 			else {
 				try {
