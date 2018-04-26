@@ -71,11 +71,15 @@ cd $hardwareDir;
 moduleRepo=(
 	"https://github.com/tjakie/home-ui-tplink-hs.git"
 	"https://github.com/tjakie/home-ui-harmonyhub"
+	"https://github.com/tjakie/home-ui-tradfrihub"
+	"https://github.com/tjakie/home-ui-suncalc"
 );
 
 moduleDir=( 
 	"tplinkHs" 
 	"harmonyHub" 
+	"tradfriHub" 
+	"suncalc" 
 );
 
 arraylength=${#moduleRepo[@]}
