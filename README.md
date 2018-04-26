@@ -17,7 +17,10 @@ Every hardware device has it's own node process that's managed and logged via th
 
 ## Installation
 I develop on a debian machine so I've created a simple to use install script!
+
+```bash
 curl https://github.com/tjakie/home-ui-frontend/install_debian.sh | sh
+```
 
 ## Wanna help
 Feel free to work with me on this project!
